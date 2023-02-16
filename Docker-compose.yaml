@@ -1,0 +1,41 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Feb 15 23:39:30 2023
+
+@author: Skander
+"""
+
+# Docker Compose file to run a Python web app and MongoDB
+version: '3'
+
+services:
+  web:
+    image: skander/python-docker:1.2
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      MONGO_HOST: db
+
+  db:
+    image: mongo
+    volumes:
+      - db_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongoadmin
+      MONGO_INITDB_ROOT_PASSWORD: secret
+
+  mongo-express:
+    image: mongo-express
+    ports:
+      - "8081:8081"
+    depends_on:
+      - db
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: mongoadmin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: secret
+      ME_CONFIG_MONGODB_SERVER: db
+
+volumes:
+  db_data:
